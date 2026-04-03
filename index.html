@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>刘雨珍生日快乐🎂</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #ffe6f0 0%, #f8c8dc 50%, #ffebee 100%);
+            font-family: "Microsoft YaHei", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .card {
+            background: white;
+            padding: 60px 80px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .title {
+            font-size: 4rem;
+            color: #d63384;
+            margin-bottom: 30px;
+        }
+        .wish {
+            font-size: 1.6rem;
+            color: #457b9d;
+            line-height: 2;
+            margin-bottom: 50px;
+        }
+        .start-btn {
+            padding: 18px 50px;
+            background: #d63384;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .start-btn:active {
+            transform: scale(0.96);
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1 class="title">刘雨珍生日快乐🎂</h1>
+    <div class="wish">
+        <p>愿你岁岁年年，平安喜乐</p>
+        <p>新的一岁，万事胜意</p>
+    </div>
+    <button class="start-btn" onclick="playAndGo()">立即开启</button>
+</div>
+
+<audio id="bgm" loop>
+
+    <script>
+        const audio = document.getElementById('bgm');
+        // ✅ 你刚生成的在线直链，直接嵌入
+        audio.src = "https://videotourl.com/audio/1775211816011-d961c3c0-1843-492d-9ca4-15aed175e8cc.mp3";
+
+        function playAndGo() {
+            try {
+                audio.play();
+            } catch (e) {}
+            setTimeout(() => {
+                location.href = "blessing.html";
+            }, 300);
+        }
+    </script>
+
+</body>
+</html>
