@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>刘雨珍生日快乐</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            overflow: hidden;
+            background: #f8f8f8;
+        }
+        .slideshow-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 1.2s ease-in-out;
+            pointer-events: none;
+        }
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* 第1页 */
+        #page1 {
+            background: linear-gradient(135deg, #ffe6f0, #ffd6e0);
+        }
+        .page1-card {
+            background: white;
+            padding: 4rem 5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.15);
+            text-align: center;
+        }
+        .page1-title {
+            font-size: 3rem;
+            color: #e91e63;
+            margin-bottom: 1.5rem;
+        }
+        .page1-text {
+            font-size: 1.3rem;
+            color: #607d8b;
+            line-height: 2;
+            margin-bottom: 2.5rem;
+        }
+        .start-btn {
+            padding: 1rem 3rem;
+            background: linear-gradient(90deg, #ff80ab, #e91e63);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+            transition: transform 0.3s;
+        }
+        .start-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* 第2页 */
+        #page2 {
+            background: linear-gradient(180deg, #ffd6e0, #fff0f5);
+        }
+        .fireworks-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        .current-text {
+            position: relative;
+            z-index: 2;
+            font-size: 3rem;
+            color: #e91e63;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+        .current-text.show {
+            opacity: 1;
+        }
+
+        /* 第3页：紧凑信件样式 */
+        #page3 {
+            background: #fff0f5;
+        }
+        .letter-container {
+            background: white;
+            padding: 3.5rem 4rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.1);
+            max-width: 750px;
+        }
+        .letter-content {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: #333;
+            text-align: left;
+        }
+        .letter-content p {
+            margin-bottom: 12px;
+        }
+        .letter-sign {
+            margin-top: 1.5rem;
+            text-align: right;
+            font-size: 1.2rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+<div class="slideshow-container">
+    <!-- 第1页 -->
+    <div class="slide active" id="page1">
+        <div class="page1-card">
+            <h1 class="page1-title">刘雨珍生日快乐 🎂</h1>
+            <div class="page1-text">
+                <p>愿你岁岁年年，平安喜乐</p>
+                <p>新的一岁，万事胜意</p>
+            </div>
+            <button class="start-btn" id="startBtn">立即开启</button>
+        </div>
+    </div>
+
+    <!-- 第2页：烟花+逐行文字 -->
+    <div class="slide" id="page2">
+        <canvas class="fireworks-canvas" id="fireworks"></canvas>
+        <div class="current-text" id="displayText"></div>
+    </div>
+
+    <!-- 第3页：紧凑排版信件 -->
+    <div class="slide" id="page3">
+        <div class="letter-container">
+            <div class="letter-content">
+                <p style="font-size:1.5rem; margin-bottom:1rem;">亲爱的刘雨珍：</p>
+                <p style="text-indent: 2em;">我很开心遇到你，我觉得这是一件很幸运的事。又陪你长大一岁啦！</p>
+                <p style="text-indent: 2em;">新的一岁，愿你平安喜乐，万事顺意，想要的都如期而至，不期而遇的惊喜也都为你而来。</p>
+                <p style="text-indent: 2em;">愿你永远保持对生活的热爱，永远有奔赴喜欢的事的勇气；愿你被世界温柔以待，有人懂你的欲言又止，也有人疼你的小小心事。</p>
+                <p style="text-indent: 2em;">愿你想要的都慢慢靠近，不开心的都悄悄远离；愿你永远被人善待、被人珍惜，自在发光，永远做那个舒服的自己。</p>
+                <div class="letter-sign">—— 星辰</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<audio id="bgm" loop src="birthday_song.mp3">
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const startBtn = document.getElementById('startBtn');
+        const bgm = document.getElementById('bgm');
+        let currentSlide = 0;
+
+        const textList = [
+            "小雨",
+            "生日快乐",
+            "希望你能够天天开心",
+            "保持真诚与热爱",
+            "永远做最舒服的自己",
+            "愿你前路光明",
+            "万事顺遂",
+            "所有努力都不被辜负",
+            "所有期待都能实现",
+            "愿你被世界温柔以待",
+            "幸福常在"
+        ];
+
+        const displayText = document.getElementById('displayText');
+        const textShowDuration = 1800;
+
+        startBtn.addEventListener('click', () => {
+            bgm.play();
+            goToSlide(1);
+
+            let currentIndex = 0;
+            const showNextText = () => {
+                displayText.classList.remove('show');
+                setTimeout(() => {
+                    if (currentIndex < textList.length) {
+                        displayText.textContent = textList[currentIndex];
+                        displayText.classList.add('show');
+                        currentIndex++;
+                        setTimeout(showNextText, textShowDuration);
+                    } else {
+                        setTimeout(() => {
+                            goToSlide(2);
+                        }, textShowDuration);
+                    }
+                }, 500);
+            };
+            setTimeout(showNextText, 500);
+        });
+
+        function goToSlide(index) {
+            slides[currentSlide].classList.remove('active');
+            slides[index].classList.add('active');
+            currentSlide = index;
+        }
+
+        // 烟花粒子动画
+        const canvas = document.getElementById('fireworks');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let fireworks = [];
+        let particles = [];
+        const colors = ['#ff69b4', '#ff1493', '#ff6347', '#ffd700', '#7fff00'];
+
+        class Firework {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height;
+                this.speed = Math.random() * 4 + 2;
+                this.angle = Math.random() * Math.PI * 2;
+                this.vx = Math.cos(this.angle) * this.speed;
+                this.vy = -this.speed;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.targetY = Math.random() * canvas.height / 2;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += 0.05;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+            isExploded() {
+                return this.vy >= 0 || this.y <= this.targetY;
+            }
+        }
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.speed = Math.random() * 5 + 1;
+                this.angle = Math.random() * Math.PI * 2;
+                this.vx = Math.cos(this.angle) * this.speed;
+                this.vy = Math.sin(this.angle) * this.speed;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.01 + 0.005;
+                this.color = color;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += 0.05;
+                this.alpha -= this.decay;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+                ctx.fillStyle = this.color.replace(')', `,${this.alpha})`).replace('rgb', 'rgba');
+                ctx.fill();
+            }
+            isDead() {
+                return this.alpha <= 0;
+            }
+        }
+
+        function loop() {
+            ctx.fillStyle = 'rgba(255, 240, 245, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (Math.random() < 0.03) fireworks.push(new Firework());
+
+            fireworks.forEach((fw, i) => {
+                fw.update();
+                fw.draw();
+                if (fw.isExploded()) {
+                    for (let j = 0; j < 50; j++) {
+                        particles.push(new Particle(fw.x, fw.y, fw.color));
+                    }
+                    fireworks.splice(i, 1);
+                }
+            });
+
+            particles.forEach((p, i) => {
+                p.update();
+                p.draw();
+                if (p.isDead()) particles.splice(i, 1);
+            });
+
+            requestAnimationFrame(loop);
+        }
+        loop();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
