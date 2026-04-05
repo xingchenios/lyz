@@ -163,7 +163,7 @@
     </div>
 </div>
 
-<audio id="bgm" loop src="birthday_song.mp3" playsinline preload="auto">
+<audio id="bgm" loop src="birthday_song.mp3">
 
     <script>
         const slides = document.querySelectorAll('.slide');
@@ -189,8 +189,7 @@
         const textShowDuration = 1800;
 
         startBtn.addEventListener('click', () => {
-            // 极简播放，手机最稳
-            bgm.play().catch(() => {});
+            bgm.play();
             goToSlide(1);
 
             let currentIndex = 0;
@@ -218,7 +217,7 @@
             currentSlide = index;
         }
 
-        // 烟花动画正常
+        // 烟花粒子动画
         const canvas = document.getElementById('fireworks');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
