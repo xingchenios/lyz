@@ -163,8 +163,7 @@
     </div>
 </div>
 
-<!-- 🔧 修复音频：加上 preload & playsinline & 移动端优化 -->
-<audio id="bgm" loop preload="auto" playsinline webkit-playsinline>
+<audio id="bgm" loop src="birthday_song.mp3" playsinline preload="auto">
 
     <script>
         const slides = document.querySelectorAll('.slide');
@@ -172,16 +171,11 @@
         const bgm = document.getElementById('bgm');
         let currentSlide = 0;
 
-        // 🔧 音频配置（GitHub 路径 + 移动端低延迟）
-        const audioUrl = 'birthday_song.mp3'; // 确保文件名一致
-        bgm.src = audioUrl;
-        bgm.load(); // 强制预加载
-
         const textList = [
             "小雨",
             "生日快乐",
             "希望你能够天天开心",
-            "保持热爱与真诚",
+            "保持真诚与热爱",
             "永远做最舒服的自己",
             "愿你前路光明",
             "万事顺遂",
@@ -194,20 +188,12 @@
         const displayText = document.getElementById('displayText');
         const textShowDuration = 1800;
 
-        // 🔧 核心修复：用户点击时 立即激活+播放音频
-        startBtn.addEventListener('click', async () => {
-            try {
-                // 移动端必须在用户事件内播放一次激活音频上下文
-                await bgm.play();
-            } catch (e) {
-                console.log('音频激活中', e);
-                // 降级：延迟播放
-                setTimeout(() => bgm.play(), 300);
-            }
-
+        startBtn.addEventListener('click', () => {
+            // 极简播放，手机最稳
+            bgm.play().catch(() => {});
             goToSlide(1);
-            let currentIndex = 0;
 
+            let currentIndex = 0;
             const showNextText = () => {
                 displayText.classList.remove('show');
                 setTimeout(() => {
@@ -232,7 +218,7 @@
             currentSlide = index;
         }
 
-        // 烟花粒子动画
+        // 烟花动画正常
         const canvas = document.getElementById('fireworks');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
